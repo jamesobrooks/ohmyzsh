@@ -55,5 +55,5 @@ prcamsfeature() {
 camsnewbranch() {
   issue=$1
   name=$2
-  git checkout -b CAMS-${issue}-${name}
+  git switch -c CAMS-${issue}-${name}
 }
