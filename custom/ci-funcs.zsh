@@ -79,5 +79,11 @@ prcamsfeature() {
   else
     branch=$(git rev-parse --abbrev-ref HEAD)
   fi
-  open "https://github.com/US-Trustee-Program/Bankruptcy-Oversight-Support-Systems/compare/main...${branch}?template=feature.md";
+  open "https://github.com/US-Trustee-Program/Bankruptcy-Oversight-Support-Systems/compare/main...${branch}";
+}
+
+camsnewbranch() {
+  issue=$1
+  name=$2
+  git checkout -b CAMS-${issue}-${name}
 }
