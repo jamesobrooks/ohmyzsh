@@ -1,5 +1,6 @@
 # custom - machine specific
 custom/path.zsh
+custom/vars.zsh
 
 # temp files directories
 cache/
