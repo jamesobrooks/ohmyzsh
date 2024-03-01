@@ -104,6 +104,7 @@ ZSH_THEME_GIT_PROMPT_BEHIND="%{$fg[magenta]%}▾%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[green]%}●%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$fg[yellow]%}●%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[red]%}●%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_BISECTING="%{$fg[red]%}bisecting%{$reset_color%}"
 
 bureau_git_info () {
   local ref
@@ -118,6 +119,9 @@ bureau_git_status() {
 
   # check status of files
   local gitfiles="$(tail -n +2 <<< "$gitstatus")"
+  if [[ "$(git bisect log 2>/dev/null)" ]]; then
+    result+="$ZSH_THEME_GIT_PROMPT_BISECTING"
+  fi
   if [[ -n "$gitfiles" ]]; then
     if [[ "$gitfiles" =~ $'(^|\n)[AMRD]. ' ]]; then
       result+="$ZSH_THEME_GIT_PROMPT_STAGED"
