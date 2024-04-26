@@ -6,4 +6,3 @@ alias gfa="git fetch --all"
 alias gpl="git pull"
 alias gps="git push"
 alias gpsnew="git push -u origin"
-
