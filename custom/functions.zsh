@@ -5,6 +5,26 @@ function killport() {
   lsof -P | grep ":$port" | awk '{print $2}' | xargs kill -9
 }
 
+function deleteMergedBranches() {
+  git branch --merged | grep -Ev "(^\*|master|main)" | xargs git branch -d
+}
+
+function deleteStaleBranches() {
+  git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short) %(committerdate:unix)' | while read branch date; do
+    if [ "$date" -le "$(date -v-15d +%s)" ]; then
+      echo $branch | grep -Ev "(^\*|master|main|x-*)" | xargs git branch -D
+    fi
+  done
+}
+
+function listStaleBranches() {
+  git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short) %(committerdate:unix)' | while read branch date; do
+    if [ "$date" -le "$(date -v-15d +%s)" ]; then
+      echo $branch | grep -Ev "(^\*|master|main|x-*)" | xargs echo
+    fi
+  done
+}
+
 # Automatic nvm use with .nvmrc
 # place this after nvm initialization!
 autoload -U add-zsh-hook

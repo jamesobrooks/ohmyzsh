@@ -52,6 +52,15 @@ prcamsfeature() {
   open "https://github.com/US-Trustee-Program/Bankruptcy-Oversight-Support-Systems/compare/main...${branch}";
 }
 
+prcamsupdate() {
+  if [[ -n $1 ]]; then
+    branch=$1
+  else
+    branch=$(git rev-parse --abbrev-ref HEAD)
+  fi
+  open "https://github.com/US-Trustee-Program/Bankruptcy-Oversight-Support-Systems/compare/main...${branch}?template=dependencies.md";
+}
+
 camsnewbranch() {
   issue=$1
   name=$2
