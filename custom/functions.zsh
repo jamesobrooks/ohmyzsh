@@ -17,6 +17,31 @@ function deleteStaleBranches() {
   done
 }
 
+function deleteMatchingBranches() {
+  if [[ $# -eq 0 ]]; then
+    echo "You need to provide a pattern to match on. See the description of grep's '-E' option for more details."
+    return 1
+  fi
+  local pattern branches
+  pattern="${(j:|:)@}"
+  branches=$(git branch | grep -E "(^\s*${pattern})")
+  echo $branches
+  echo
+
+  if [[ "$branches" == "" ]]; then
+    echo "No branches found that match the pattern (^\s*${pattern})."
+    return
+  fi
+
+  read "response?Do you want to delete these branches? (y/N): "
+
+  if [[ "$response" == "y" ]]; then
+    echo "$branches" | xargs git branch -D
+  else
+    echo "No branches were deleted."
+  fi
+}
+
 function listStaleBranches() {
   git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short) %(committerdate:unix)' | while read branch date; do
     if [ "$date" -le "$(date -v-15d +%s)" ]; then
