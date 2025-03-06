@@ -50,6 +50,12 @@ function listStaleBranches() {
   done
 }
 
+function gpsnew() {
+  local branch="${1:-$(git rev-parse --abbrev-ref HEAD)}"
+  git push -u origin "$branch"
+}
+
+
 # Automatic nvm use with .nvmrc
 # place this after nvm initialization!
 autoload -U add-zsh-hook
