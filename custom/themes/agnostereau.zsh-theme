@@ -326,7 +326,7 @@ prompt_status() {
 
   [[ $RETVAL -ne 0 ]] && symbols+="%{%F{red}%}✘"
   [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}⚡"
-  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
+  # [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
 
   [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
 }
@@ -371,9 +371,14 @@ get_space () {
 }
 
 java_prompt_info () {
-  # This assumes that JAVA_HOME ends in /Contents/Home
+  if [[ -z "$JAVA_HOME" ]]; then
+    return
+  fi
+  local JAVA_VERSION
   JAVA_VERSION=$(echo "$JAVA_HOME" | awk -F '/' '{print $(NF-2)}')
-  print %BJava:%b $JAVA_VERSION
+  if [[ -n "$JAVA_VERSION" ]]; then
+    print %BJava:%b $JAVA_VERSION
+  fi
 }
 
 _1LEFT=$(build_prompt)

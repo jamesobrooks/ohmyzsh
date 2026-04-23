@@ -10,8 +10,14 @@ function deleteMergedBranches() {
 }
 
 function deleteStaleBranches() {
+  local cut_off_date
+  if [[ "$(uname)" = "Darwin" ]]; then
+    cut_off_date=$(date -v-15d +%s)
+  else
+    cut_off_date=$(date -d '15 days ago' +%s)
+  fi
   git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short) %(committerdate:unix)' | while read branch date; do
-    if [ "$date" -le "$(date -v-15d +%s)" ]; then
+    if [ "$date" -le "$cut_off_date" ]; then
       echo $branch | grep -Ev "(^\*|master|main|x-*)" | xargs git branch -D
     fi
   done
@@ -43,8 +49,14 @@ function deleteMatchingBranches() {
 }
 
 function listStaleBranches() {
+  local cut_off_date
+  if [[ "$(uname)" = "Darwin" ]]; then
+    cut_off_date=$(date -v-15d +%s)
+  else
+    cut_off_date=$(date -d '15 days ago' +%s)
+  fi
   git for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short) %(committerdate:unix)' | while read branch date; do
-    if [ "$date" -le "$(date -v-15d +%s)" ]; then
+    if [ "$date" -le "$cut_off_date" ]; then
       echo $branch | grep -Ev "(^\*|master|main|x-*)" | xargs echo
     fi
   done
