@@ -11,3 +11,8 @@ alias delstl="deleteStaleBranches"
 alias lsstl="listStaleBranches"
 alias delmatch="deleteMatchingBranches"
 alias srczsh="source ~/.zshrc"
+
+# Fedora/RHEL-specific: redirect apt to yum warning
+if [[ "$OSTYPE" != darwin* ]] && [[ -x /usr/bin/dnf || -x /usr/bin/yum ]]; then
+  alias apt="noApt"
+fi

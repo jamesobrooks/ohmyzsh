@@ -2,7 +2,12 @@ function killport() {
   local port
   port=$1; shift
   echo "Killing process on port $port."
-  lsof -P | grep ":$port" | awk '{print $2}' | xargs kill -9
+  # macOS uses lsof -P differently than Linux
+  if [[ "$OSTYPE" == darwin* ]]; then
+    lsof -P | grep ":$port" | awk '{print $2}' | xargs kill -9
+  else
+    lsof -i :$port | awk 'NR>1 {print $2}' | xargs kill -9
+  fi
 }
 
 function deleteMergedBranches() {
@@ -11,7 +16,7 @@ function deleteMergedBranches() {
 
 function deleteStaleBranches() {
   local cut_off_date
-  if [[ "$(uname)" = "Darwin" ]]; then
+  if [[ "$OSTYPE" == darwin* ]]; then
     cut_off_date=$(date -v-15d +%s)
   else
     cut_off_date=$(date -d '15 days ago' +%s)
@@ -50,7 +55,7 @@ function deleteMatchingBranches() {
 
 function listStaleBranches() {
   local cut_off_date
-  if [[ "$(uname)" = "Darwin" ]]; then
+  if [[ "$OSTYPE" == darwin* ]]; then
     cut_off_date=$(date -v-15d +%s)
   else
     cut_off_date=$(date -d '15 days ago' +%s)
@@ -61,6 +66,13 @@ function listStaleBranches() {
     fi
   done
 }
+
+# Fedora/RHEL-specific: warn when using apt
+if [[ "$OSTYPE" != darwin* ]] && [[ -x /usr/bin/dnf || -x /usr/bin/yum ]]; then
+  function noApt() {
+    echo "You typed 'apt', but you should probably be using 'yum' or 'dnf'."
+  }
+fi
 
 # Automatic nvm use with .nvmrc
 # place this after nvm initialization!
